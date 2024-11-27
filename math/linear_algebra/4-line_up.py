@@ -5,11 +5,9 @@
 def add_arrays(arr1, arr2):
     """
     Adds two arrays element-wise.
-    
     Args:
         arr1 (list): The first array (list of ints/floats).
         arr2 (list): The second array (list of ints/floats).
-    
     Returns:
         list: A new list containing the element-wise sum of arr1 and arr2,
               or None if the arrays have different shapes.
