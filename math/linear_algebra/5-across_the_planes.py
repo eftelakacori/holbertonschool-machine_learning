@@ -16,4 +16,3 @@ print("mat2:", mat2)  # Expected output: [[5, 6], [7, 8]]
 # Test case 2 (matrices with different dimensions)
 print("Result of adding mat1 and a matrix with different dimensions:")
 print(add_matrices2D(mat1, [[1, 2, 3], [4, 5, 6]]))  # Expected output: None
-
