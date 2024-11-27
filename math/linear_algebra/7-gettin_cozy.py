@@ -2,7 +2,7 @@
 """defines function concatenates two matrices along a specific axis"""
 
 
-def cat_matrices2D(mat1, mat2, axis=0):
+def cat_matrices2D(mat1, mat2, axis=0):   
     if axis == 0:
         # Kontrollojmë që numri i kolonave të jetë i njëjtë
         if len(mat1[0]) != len(mat2[0]):
