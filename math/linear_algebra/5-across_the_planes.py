@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
-"""defines function that returns the transpose of a 2D matrix"""
-# Import the add_matrices2D function from 5-across_the_planes.py
+"""defines function 2D matrices containing ints/floats"""
 
-add_matrices2D = __import__('5-across_the_planes').add_matrices2D
-# Test case 1
-mat1 = [[1, 2], [3, 4]]
-mat2 = [[5, 6], [7, 8]]
-print("Result of adding mat1 and mat2:")
-print(add_matrices2D(mat1, mat2))  # Expected output: [[6, 8], [10, 12]]
-# Ensure mat1 and mat2 are not modified
-print("mat1:", mat1)  # Expected output: [[1, 2], [3, 4]]
-print("mat2:", mat2)  # Expected output: [[5, 6], [7, 8]]
-# Test case 2 (matrices with different dimensions)
-print("Result of adding mat1 and a matrix with different dimensions:")
-print(add_matrices2D(mat1, [[1, 2, 3], [4, 5, 6]]))  # Expected output: None
+
+def add_matrices2D(mat1, mat2):
+    """Adds two 2D matrices element-wise.
+    Args:
+        mat1 (list of lists): The first 2D matrix (list of lists of ints/floats).
+        mat2 (list of lists): The second 2D matrix (list of lists of ints/floats).
+    Returns:
+        list of lists: A new matrix containing the element-wise sum of mat1 and mat2,
+                       or None if the matrices have different shapes."""
+    # Kontrollo nëse matricat kanë të njëjtën formë
+    if len(mat1) != len(mat2) or len(mat1[0]) != len(mat2[0]):
+        return None    
+    # Kthe matricën që është shuma element-për-element
+    return [
+        [mat1[i][j] + mat2[i][j] for j in range(len(mat1[0]))]
+        for i in range(len(mat1))
+    ]
