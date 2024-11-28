@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""defines function that that performs matrix multiplication"""
+"""defines function that performs matrix multiplication"""
 
 import numpy as np
 
