@@ -18,16 +18,5 @@ def np_elementwise(mat1, mat2):
         - Element-wise quotient (mat1 / mat2)
     """
     # Perform element-wise addition using the + operator
-    addition = mat1 + mat2
+    return mat1 + mat2, mat1 - mat2, mat1 * mat2, mat1 / mat2
     
-    # Perform element-wise subtraction using the - operator
-    subtraction = mat1 - mat2
-    
-    # Perform element-wise multiplication using the * operator
-    multiplication = mat1 * mat2
-    
-    # Perform element-wise division using the / operator
-    division = mat1 / mat2
-
-    # Return all the computed results as a tuple
-    return addition, subtraction, multiplication, division
