@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
-"""defines function 2D matrices containing ints/floats"""
+"""defines function that that performs matrix multiplications"""
 
 
 def mat_mul(mat1, mat2):
+    """Performs matrix multiplication with two given matrices"""
     if len(mat1[0]) != len(mat2):
         return None
 
-    result = [[0 for _ in range(len(mat2[0]))] for _ in range(len(mat1))]
-    for i in range(len(mat1)):
-        for j in range(len(mat2[0])):
-            for k in range(len(mat2)):
-                result[i][j] += mat1[i][k] * mat2[k][j]
+    mat = [[sum(mat1[z][j] * mat2[j][i] for j in range(len(mat1[0])))
+            for i in range(len(mat2[0]))] for z in range(len(mat1))]
 
-    return result
+    return
