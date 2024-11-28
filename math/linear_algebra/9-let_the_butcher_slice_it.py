@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""defines function that following source code (found below)"""
+"""defines function that returns the transpose of a 2D matrix"""
 
 
 import numpy as np
