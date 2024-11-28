@@ -2,9 +2,6 @@
 """defines function that returns the transpose of a 2D matrix"""
 
 
-import numpy as np
-
-
 def np_shape(matrix):
     # Directly return the shape of the matrix as a tuple of integers
     return matrix.shape
