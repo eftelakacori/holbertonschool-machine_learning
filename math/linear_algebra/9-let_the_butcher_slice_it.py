@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""defines function that he following source code (found below"""
+"""defines function that found below"""
 
 
 import numpy as np
