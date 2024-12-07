@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """ a script that calculates the sum of squares"""
 
+import math
+
 class Poisson:
     def __init__(self, data=None, lambtha=1.):
         # Validate lambtha
@@ -17,3 +19,13 @@ class Poisson:
         else:
             # If no data is provided, use the given lambtha
             self.lambtha = float(lambtha)
+    
+    def pmf(self, k):
+        """
+        Calculate the probability mass function for a given k.
+        """
+        if k < 0 or not isinstance(k, int):
+            raise ValueError("k must be a non-negative integer")
+        
+        # Poisson PMF formula: P(X = k) = (lambda^k * e^(-lambda)) / k!
+ 
