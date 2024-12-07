@@ -13,9 +13,10 @@ def poly_integral(poly, C=0):
     Returns:
         list: Coefficients of the integral of the polynomial, or None if input is invalid.
     """
-    # Validate inputs
+    # Validate that poly is a list and each element is either an integer or a float
     if not isinstance(poly, list) or not all(isinstance(x, (int, float)) for x in poly):
         return None
+    # Validate that C is either an integer or a float
     if not isinstance(C, (int, float)):
         return None
 
