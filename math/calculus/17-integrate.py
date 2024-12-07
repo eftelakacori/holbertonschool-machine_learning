@@ -11,10 +11,10 @@ def poly_integral(poly, C=0):
         C (int): Integration constant.
 
     Returns:
-        list: Coefficients of the integral of the polynomial.
+        list: Coefficients of the integral of the polynomial, or None if input is invalid.
     """
     # Validate inputs
-    if not isinstance(poly, list) or not all(isinstance(c, (int, float)) for c in poly):
+    if not isinstance(poly, list) or not all(isinstance(x, (int, float)) for x in poly):
         return None
     if not isinstance(C, (int, float)):
         return None
