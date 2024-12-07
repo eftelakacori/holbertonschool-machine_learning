@@ -19,6 +19,10 @@ def poly_integral(poly, C=0):
     if not isinstance(C, (int, float)):
         return None
 
+    # Handle the edge case where the polynomial is [0]
+    if poly == [0]:
+        return [C]
+
     # Calculate the integral
     integral = [C]  # Start with the integration constant
     for i, coeff in enumerate(poly):
