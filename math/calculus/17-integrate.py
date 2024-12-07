@@ -1,35 +1,27 @@
 #!/usr/bin/env python3
-""" a script that calculates the integral of a polynomial:"""
+""" defines a function that calculates the integral of a polynomial """
 
 
 def poly_integral(poly, C=0):
     """
-    Calculates the integral of a polynomial.
-
-    Args:
-        poly (list): List of coefficients representing the polynomial.
-        C (int): Integration constant.
-
-    Returns:
-        list: Coefficients of the integral of the polynomial, or None if input is invalid.
+    calculates the integral of the given polynomial
     """
-    # Validate that poly is a list and each element is either an integer or a float
-    if not isinstance(poly, list) or not all(isinstance(x, (int, float)) for x in poly):
+    if type(poly) is not list or len(poly) < 1:
         return None
-    # Validate that C is either an integer or a float
-    if not isinstance(C, (int, float)):
+    if type(C) is not int and type(C) is not float:
         return None
-
-    # Handle the edge case where the polynomial is [0]
-    if poly == [0]:
-        return [C]
-
-    # Calculate the integral
-    integral = [C]  # Start with the integration constant
-    for i, coeff in enumerate(poly):
-        integral.append(coeff / (i + 1))
-
-    # Convert whole number coefficients to integers
-    integral = [int(c) if c == int(c) else c for c in integral]
-
+    for coefficient in poly:
+        if type(coefficient) is not int and type(coefficient) is not float:
+            return None
+    if type(C) is float and C.is_integer():
+        C = int(C)
+    integral = [C]
+    for power, coefficient in enumerate(poly):
+        if (coefficient % (power + 1)) is 0:
+            new_coefficient = coefficient // (power + 1)
+        else:
+            new_coefficient = coefficient / (power + 1)
+        integral.append(new_coefficient)
+    while integral[-1] is 0 and len(integral) > 1:
+        integral = integral[:-1]
     return integral
