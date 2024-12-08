@@ -1,30 +1,19 @@
-#!/usr/bin/env python3
-""" a script that calculates the sum of squares"""
-
-
 def poly_derivative(poly):
     """
     Calculates the derivative of a polynomial.
 
     Args:
-        poly (list): List of coefficients representing the polynomial.
+        poly (list): Coefficients of the polynomial.
 
     Returns:
-    list: Coefficients of the derivative of the polynomial.
+        list: Coefficients of the derivative, or None if invalid.
     """
-    # Validate that poly is a list
-    if not isinstance(poly, list) or not all(isinstance(x, (int, float)) for x in poly):
+    if not isinstance(poly, list) or len(poly) == 0 or not all(isinstance(c, (int, float)) for c in poly):
         return None
-
-    # Handle the edge case where the polynomial is [0]
-    if poly == [0]:
+    
+    if len(poly) == 1:  # Polinomi është konstant
         return [0]
-
-    # Calculate the derivative
-    derivative = []
-    for i in range(1, len(poly)):
-        derivative.append(poly[i] * i)
-    if not derivative:
-        return [0]
-
+    
+    # Derivati
+    derivative = [i * poly[i] for i in range(1, len(poly))]
     return derivative
