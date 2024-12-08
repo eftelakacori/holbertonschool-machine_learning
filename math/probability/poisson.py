@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 """Poisson class"""
-
-
 e = 2.7182818285
-
 
 class Poisson:
     """Class Poisson"""
@@ -41,4 +38,3 @@ class Poisson:
         for i in range(k + 1):
             cdf += self.pmf(i)
         return cdf
-        
