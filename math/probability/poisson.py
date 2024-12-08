@@ -1,34 +1,44 @@
-import math
+#!/usr/bin/env python3
+"""Poisson class"""
+
+
+e = 2.7182818285
+
 
 class Poisson:
-    """Përfaqëson një shpërndarje Poisson."""
-
+    """Class Poisson"""
     def __init__(self, data=None, lambtha=1.):
-        """Inicializon shpërndarjen Poisson."""
+        """Class constructor"""
         if data is None:
             if lambtha <= 0:
-                raise ValueError("lambtha duhet të jetë një vlerë pozitive")
+                raise ValueError("lambtha must be a positive value")
             self.lambtha = float(lambtha)
         else:
-            if not isinstance(data, list):
-                raise TypeError("data duhet të jetë një listë")
-            if len(data) < 2:
-                raise ValueError("data duhet të përmbajë disa vlera")
-            self.lambtha = float(sum(data) / len(data))
+            if type(data) is not list:
+                raise TypeError("data must be a list")
+            elif len(data) < 2:
+                raise ValueError("data must contain multiple values")
+            self.lambtha = sum(data)/len(data)
 
     def pmf(self, k):
-        """
-        Llogarit funksionin e masës së probabilitetit (PMF) për një numër të caktuar suksesesh.
-
-        Args:
-            k (int): Numri i suksesesh.
-
-        Returns:
-            float: Vlera e PMF për k.
-        """
-        if not isinstance(k, (int, float)):
-            return 0
-        k = int(k)  # Konverto k në integer
+        """Calculates the PMF"""
+        if type(k) is not int:
+            k = int(k)
         if k < 0:
             return 0
-        return (math.exp(-self.lambtha) * self.lambtha ** k) / math.factorial(k)
+        fact = 1
+        for i in range(1, k + 1):
+            fact = fact * i
+        return (e ** -self.lambtha * self.lambtha ** k) / fact
+
+    def cdf(self, k):
+        """Calculates the CDF"""
+        if type(k) is not int:
+            k = int(k)
+        if k < 0:
+            return 0
+        cdf = 0
+        for i in range(k + 1):
+            cdf += self.pmf(i)
+        return cdf
+        
