@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-""" a script that calculates the sum of squares"""
+"""defines function that calculates the shape of a matrix"""
+
 
 class Poisson:
     def __init__(self, data=None, lambtha=1.):
@@ -17,4 +18,3 @@ class Poisson:
         else:
             # Nëse të dhënat nuk janë dhënë, përdor lambtha e dhënë
             self.lambtha = float(lambtha)
-
