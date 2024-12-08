@@ -13,7 +13,8 @@ def poly_derivative(poly):
         list: Coefficients of the derivative, or None if invalid.
     """
     # Verifikimi nëse poly është një listë e vlefshme
-    if not isinstance(poly, list) or len(poly) == 0 or not all(isinstance(c, (int, float)) for c in poly):
+    if not isinstance(poly, list) or len(poly) == 0 or \
+       not all(isinstance(c, (int, float)) for c in poly):
         return None
 
     # Nëse polinomi është konstant (përmban vetëm një element)
