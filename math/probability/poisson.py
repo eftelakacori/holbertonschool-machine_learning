@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Poisson class"""
+
 e = 2.7182818285
+
 
 class Poisson:
     """Class Poisson"""
