@@ -5,13 +5,12 @@ import pandas as pd
 
 
 def rename(df):
-    """Renames the Timestamp column to Datetime, converts it to datetime, 
-    and displays only the Datetime and Close columns."""
+    """Converts it to datetime, and displays the Datetime and Close columns."""
 
     # Rename the 'Timestamp' column to 'Datetime'
     df = df.rename(columns={"Timestamp": "Datetime"})
 
-    # Convert 'Datetime' column to datetime assuming it's in Unix timestamp format
+    # Convert 'Datetime' column to datetime in Unix timestamp format
     df["Datetime"] = pd.to_datetime(df["Datetime"], unit='s')
 
     # Select and return only the 'Datetime' and 'Close' columns
