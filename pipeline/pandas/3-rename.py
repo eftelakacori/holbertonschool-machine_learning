@@ -11,8 +11,8 @@ def rename(df):
     # Rename the 'Timestamp' column to 'Datetime'
     df = df.rename(columns={"Timestamp": "Datetime"})
 
-    # Convert 'Datetime' column to datetime
-    df["Datetime"] = pd.to_datetime(df["Datetime"])
+    # Convert 'Datetime' column to datetime assuming it's in Unix timestamp format
+    df["Datetime"] = pd.to_datetime(df["Datetime"], unit='s')
 
     # Select and return only the 'Datetime' and 'Close' columns
     return df[["Datetime", "Close"]]
