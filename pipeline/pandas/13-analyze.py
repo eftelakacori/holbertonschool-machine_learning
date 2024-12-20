@@ -1,56 +1,48 @@
 #!/usr/bin/env python3
-""" a script that calculates the sum of squares"""
+"""
+Task 14
+"""
 
-def analyze(df):
-    # Step 1: Exclude the 'Timestamp' column if it exists
-    columns = list(df.keys())
-    if 'Timestamp' in columns:
-        columns.remove('Timestamp')
+import matplotlib.pyplot as plt
+import pandas as pd
+from_file = __import__('2-from_file').from_file
 
-    # Step 2: Initialize the statistics dictionary
-    stats = {}
 
-    # Step 3: Calculate descriptive statistics for each column
-    for column in columns:
-        values = df[column]
+df = from_file('coinbaseUSD_1-min_data_2014-12-01_to_2019-01-09.csv', ',')
 
-        # Calculate the count (number of non-null values)
-        count = len(values)
+# Remove the 'Weighted_Price' column
+df = df.drop(columns=['Weighted_Price'])
 
-        # Calculate the mean
-        mean = sum(values) / count if count > 0 else 0
+# Rename 'Timestamp' to 'Date' and convert to datetime
+df = df.rename(columns={'Timestamp': 'Date'})
+df['Date'] = pd.to_datetime(df['Date'], unit='s')
 
-        # Calculate the standard deviation (using a sample variance formula)
-        variance = sum((x - mean) ** 2 for x in values) / (count - 1) if count > 1 else 0
-        std_dev = variance ** 0.5
+# Index the data frame on 'Date'
+df = df.set_index('Date')
 
-        # Calculate the min and max
-        min_val = min(values)
-        max_val = max(values)
+# Fill missing values
+df['Close'] = df['Close'].ffill()
+df['High'] = df['High'].fillna(df['Close'])
+df['Low'] = df['Low'].fillna(df['Close'])
+df['Open'] = df['Open'].fillna(df['Close'])
+df['Volume_(BTC)'] = df['Volume_(BTC)'].fillna(0)
+df['Volume_(Currency)'] = df['Volume_(Currency)'].fillna(0)
 
-        # Calculate the 25th, 50th (median), and 75th percentiles
-        sorted_values = sorted(values)
-        q1 = sorted_values[int(count * 0.25)] if count > 0 else 0
-        q2 = sorted_values[int(count * 0.5)] if count > 0 else 0
-        q3 = sorted_values[int(count * 0.75)] if count > 0 else 0
+# Filter data to include only entries from 2017 onwards
+df = df.loc[df.index >= '2017-01-01']
 
-        # Store the statistics for this column
-        stats[column] = {
-            'count': count,
-            'mean': mean,
-            'std': std_dev,
-            'min': min_val,
-            '25%': q1,
-            '50%': q2,
-            '75%': q3,
-            'max': max_val,
-        }
+# Resample data at daily intervals and aggregate
+daily_data = df.resample('D').agg({
+    'High': 'max',
+    'Low': 'min',
+    'Open': 'mean',
+    'Close': 'mean',
+    'Volume_(BTC)': 'sum',
+    'Volume_(Currency)': 'sum'
+})
 
-    # Step 4: Calculate the sum of squares for each numerical column
-    sum_of_squares = {col: sum(x ** 2 for x in df[col]) for col in columns}
+print(daily_data)
 
-    # Step 5: Add sum of squares to the statistics
-    stats['sum_of_squares'] = sum_of_squares
-
-    # Return the statistics dictionary
-    return stats
+# Plot the daily data
+daily_data.plot()
+plt.show()
