@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
-"""
-Task 14
-"""
 
-#!/usr/bin/env python3
-"""
-Task 14
-"""
 
 import matplotlib.pyplot as plt
 import pandas as pd
