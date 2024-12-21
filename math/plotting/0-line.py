@@ -1,18 +1,27 @@
-import matplotlib.pyplot as plt
+#!/usr/bin/env python3
 import numpy as np
+import matplotlib.pyplot as plt
 
-# Generate x values between 0 and 10 (inclusive)
-x = np.linspace(0, 10, 100)
+def line():
+    # Generate y values as the cube of integers from 0 to 10
+    y = np.arange(0, 11) ** 3
+    
+    # Set up the x values, which should match the length of y
+    x = np.arange(0, 11)
 
-# Generate y values for a cubic function y = x^3
-y = x**3
+    # Create the plot with a solid red line
+    plt.plot(x, y, color='red', linestyle='-', linewidth=2)  # Solid red line
 
-# Plot the graph
-plt.plot(x, y, color='red')  # Ensure the line is red
-plt.xlim(0, 10)  # Set the x-axis to go from 0 to 10
-plt.title("Cubic Function Plot")
-plt.xlabel("X Axis")
-plt.ylabel("Y Axis")
+    # Set the x-axis range from 0 to 10
+    plt.xlim(0, 10)
 
-# Display the plot
-plt.show()
+    # Set the title and labels
+    plt.title("Cubic Function")
+    plt.xlabel("X Axis")
+    plt.ylabel("Y Axis")
+
+    # Display the plot
+    plt.show()
+
+# Call the function to display the plot
+line()
