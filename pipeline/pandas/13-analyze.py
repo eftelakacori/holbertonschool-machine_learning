@@ -1,46 +1,64 @@
 #!/usr/bin/env python3
 
-
-import matplotlib.pyplot as plt
 import pandas as pd
-from_file = __import__('2-from_file').from_file
+import matplotlib.pyplot as plt
 
+# Function to load the CSV file
+def from_file(filename, delimiter):
+    try:
+        # Read the CSV file
+        df = pd.read_csv(filename, delimiter=delimiter)
+        return df
+    except FileNotFoundError:
+        print(f"Error: The file {filename} was not found.")
+        return None
 
-df = from_file('coinbaseUSD_1-min_data_2014-12-01_to_2019-01-09.csv', ',')
+# Function to analyze and plot the data
+def analyze():
+    # File path to the CSV
+    filename = 'coinbaseUSD_1-min_data_2014-12-01_to_2019-01-09.csv'
+    
+    # Load the data from the file
+    df = from_file(filename, ',')
 
-# Remove the 'Weighted_Price' column
-df = df.drop(columns=['Weighted_Price'])
+    if df is not None:
+        # Step 1: Remove the column Weighted_Price
+        df = df.drop(columns=['Weighted_Price'])
 
-# Rename 'Timestamp' to 'Date' and convert to datetime
-df = df.rename(columns={'Timestamp': 'Date'})
-df['Date'] = pd.to_datetime(df['Date'], unit='s')
+        # Step 2: Rename the column Timestamp to Date
+        df = df.rename(columns={'Timestamp': 'Date'})
 
-# Index the data frame on 'Date'
-df = df.set_index('Date')
+        # Step 3: Convert the timestamp values to date values
+        df['Date'] = pd.to_datetime(df['Date'], unit='s')
 
-# Fill missing values
-df['Close'] = df['Close'].ffill()
-df['High'] = df['High'].fillna(df['Close'])
-df['Low'] = df['Low'].fillna(df['Close'])
-df['Open'] = df['Open'].fillna(df['Close'])
-df['Volume_(BTC)'] = df['Volume_(BTC)'].fillna(0)
-df['Volume_(Currency)'] = df['Volume_(Currency)'].fillna(0)
+        # Step 4: Index the DataFrame on Date
+        df = df.set_index('Date')
 
-# Filter data to include only entries from 2017 onwards
-df = df.loc[df.index >= '2017-01-01']
+        # Step 5: Handle missing values
+        df['Close'] = df['Close'].fillna(method='ffill')  # Fill Close missing values with the previous row value
+        df['High'] = df['High'].fillna(df['Close'])  # Fill High with the same row's Close value
+        df['Low'] = df['Low'].fillna(df['Close'])  # Fill Low with the same row's Close value
+        df['Open'] = df['Open'].fillna(df['Close'])  # Fill Open with the same row's Close value
+        df['Volume_(BTC)'] = df['Volume_(BTC)'].fillna(0)  # Fill Volume_(BTC) with 0
+        df['Volume_(Currency)'] = df['Volume_(Currency)'].fillna(0)  # Fill Volume_(Currency) with 0
 
-# Resample data at daily intervals and aggregate
-daily_data = df.resample('D').agg({
-    'High': 'max',
-    'Low': 'min',
-    'Open': 'mean',
-    'Close': 'mean',
-    'Volume_(BTC)': 'sum',
-    'Volume_(Currency)': 'sum'
-})
+        # Step 6: Filter data from 2017 and beyond
+        df = df['2017':]
 
-print(daily_data)
+        # Step 7: Resample data to daily intervals and group values
+        df_daily = df.resample('D').agg({
+            'High': 'max',
+            'Low': 'min',
+            'Open': 'mean',
+            'Close': 'mean',
+            'Volume_(BTC)': 'sum',
+            'Volume_(Currency)': 'sum'
+        })
 
-# Plot the daily data
-daily_data.plot()
-plt.show()
+        # Plot the data
+        plt.figure(figsize=(12, 6))
+        df_daily['Close'].plot(title='Close Prices (2017+)', ylabel='USD', xlabel='Date', grid=True)
+        plt.show()
+
+        # Return the transformed DataFrame before plotting
+        print(df_daily)
