@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
+""" SWAPI API
+    Returns the list of ships that can hold a given number of passengers
+"""
 import requests
 
 
 def availableShips(passengerCount):
-    ships = []
-    url = "https://swapi.dev/api/starships/"
-    
-    while url:
-        response = requests.get(url)
-        data = response.json()
-        for ship in data['results']:
-            passengers = ship['passengers'].replace(',', '')
-            if passengers.isdigit() and int(passengers) >= passengerCount:
-                ships.append(ship['name'])
-        url = data['next']
-    
-    return ships
+    """ Return the list of ships that hold 'passengerCount' passangers"""
+    data = requests.get("https://swapi-api.hbtn.io/api/starships").json()
+    available_ships = []
+    while data.get("next") is not None:
+        starships = data.get("results")
+        for starship in starships:
+            passengers = starship.get("passengers")
+            if passengers is None or passengers in ["n/a", "unknown"]:
+                continue
+            if int(passengers.replace(",", "")) < passengerCount:
+                continue
+            available_ships.append(starship.get("name"))
+        data = requests.get(data.get("next")).json()
+
+    return available_ships
