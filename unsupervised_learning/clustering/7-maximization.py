@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""That calculates the maximization"""
+""" That calculates the maximization"""
 import numpy as np
 
 def maximization(X, g):
@@ -25,7 +25,8 @@ def maximization(X, g):
     k, n_g = g.shape
     if n != n_g:
         return None, None, None
-
+    if not np.allclose(np.sum(g, axis=0), 1):
+        return None, None, None
 
     # Update priors (pi)
     N_k = np.sum(g, axis=1)  # Shape (k,)
