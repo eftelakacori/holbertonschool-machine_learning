@@ -20,29 +20,24 @@ def maximization(X, g):
         return None, None, None
     if not isinstance(g, np.ndarray) or len(g.shape) != 2:
         return None, None, None
-    n, d = X.shape
-    k, n_g = g.shape
-    
-    # Ensure g has the correct shape (k, n) and the same number of data points
+
+    n, d = X.shape  # n is the number of data points, d is the number of features
+    k, n_g = g.shape  # k is the number of clusters, n_g is the number of data points (should match n)
+
     if n != n_g:
         return None, None, None
 
-    # Check if g contains any NaN or Inf values
-    if np.isnan(g).any() or np.isinf(g).any():
-        return None, None, None
-
     # Calculate updated priors (pi)
-    pi = g.sum(axis=1) / n
+    pi = g.sum(axis=1) / n  # sum along the rows of g and normalize by the number of data points
 
     # Calculate updated means (m)
-    m = np.dot(g, X) / g.sum(axis=1)[:, np.newaxis]
+    m = np.dot(g, X) / g.sum(axis=1)[:, np.newaxis]  # weighted sum of data points for each cluster
 
     # Calculate updated covariance matrices (S)
-    S = np.zeros((k, d, d))
-    for i in range(k):
-        # Center the data by subtracting the mean for each cluster
-        X_centered = X - m[i]
-        # Compute covariance for each cluster
-        S[i] = np.dot(g[i] * X_centered.T, X_centered) / g[i].sum()
+    S = np.zeros((k, d, d))  # Initialize covariance matrices
+
+    for i in range(k):  # Loop over the clusters
+        X_centered = X - m[i]  # Center the data points by subtracting the mean
+        S[i] = np.dot((g[i] * X_centered.T), X_centered) / g[i].sum()  # Compute the covariance matrix for cluster i
 
     return pi, m, S
