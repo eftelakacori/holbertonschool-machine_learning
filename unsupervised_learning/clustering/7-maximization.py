@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+"""Expectation Module"""
 import numpy as np
 
 def kmeans(X, k, iterations=1000):
