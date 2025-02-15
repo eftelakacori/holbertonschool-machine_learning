@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Expectation Module"""
 import numpy as np
 
 def maximization(X, g):
