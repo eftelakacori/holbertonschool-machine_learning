@@ -22,7 +22,13 @@ def maximization(X, g):
         return None, None, None
     n, d = X.shape
     k, n_g = g.shape
+    
+    # Ensure g has the correct shape (k, n) and the same number of data points
     if n != n_g:
+        return None, None, None
+
+    # Check if g contains any NaN or Inf values
+    if np.isnan(g).any() or np.isinf(g).any():
         return None, None, None
 
     # Calculate updated priors (pi)
@@ -34,8 +40,9 @@ def maximization(X, g):
     # Calculate updated covariance matrices (S)
     S = np.zeros((k, d, d))
     for i in range(k):
+        # Center the data by subtracting the mean for each cluster
         X_centered = X - m[i]
+        # Compute covariance for each cluster
         S[i] = np.dot(g[i] * X_centered.T, X_centered) / g[i].sum()
-    
+
     return pi, m, S
-    
