@@ -4,10 +4,10 @@ import numpy as np
 
 def maximization(X, g):
     """
-    Maximization step of the EM algorithm for a GMM.
+    Performs the maximization step in the EM algorithm for a Gaussian Mixture Model.
     
     Parameters:
-    - X: numpy.ndarray of shape (n, d) containing the data set
+    - X: numpy.ndarray of shape (n, d) containing the dataset
     - g: numpy.ndarray of shape (k, n) containing the posterior probabilities
          for each data point in each cluster
     
@@ -41,8 +41,8 @@ def maximization(X, g):
     
     # Compute updated covariance matrices
     S = np.zeros((k, d, d))
-    X_expanded = X[np.newaxis, :, :] - m[:, np.newaxis, :]
-    S = np.einsum('ki,kij,kik->kij', g, X_expanded, X_expanded) / Nk[:, np.newaxis, np.newaxis]
+    for i in range(k):
+        diff = X - m[i]  # (n, d)
+        S[i] = (g[i, :, np.newaxis] * diff).T @ diff / Nk[i]
     
     return pi, m, S
-    
