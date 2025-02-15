@@ -25,6 +25,8 @@ def maximization(X, g):
     k, n_g = g.shape
     if n != n_g:
         return None, None, None
+    if not np.allclose(np.sum(g, axis=0), 1):
+        return None, None, None
 
     # Update priors (pi)
     N_k = np.sum(g, axis=1)  # Shape (k,)
@@ -41,4 +43,3 @@ def maximization(X, g):
         S[i] = np.dot(weighted_diff.T, diff) / N_k[i]  # Shape (d, d)
 
     return pi, m, S
-    
