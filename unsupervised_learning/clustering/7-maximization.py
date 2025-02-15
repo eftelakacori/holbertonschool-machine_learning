@@ -2,52 +2,40 @@
 """Expectation Module"""
 import numpy as np
 
-def kmeans(X, k, iterations=1000):
+def maximization(X, g):
     """
-    Performs K-means clustering on a dataset.
+    Performs the maximization step in the EM algorithm for a GMM.
     
     Parameters:
     X : numpy.ndarray of shape (n, d) - dataset
-    k : int - number of clusters
-    iterations : int - maximum number of iterations
+    g : numpy.ndarray of shape (k, n) - posterior probabilities for each data point in each cluster
     
     Returns:
-    C : numpy.ndarray of shape (k, d) - centroid means for each cluster
-    clss : numpy.ndarray of shape (n,) - index of the cluster each data point belongs to
+    pi : numpy.ndarray of shape (k,) - updated priors for each cluster
+    m : numpy.ndarray of shape (k, d) - updated centroid means for each cluster
+    S : numpy.ndarray of shape (k, d, d) - updated covariance matrices for each cluster
     """
     if not isinstance(X, np.ndarray) or len(X.shape) != 2:
-        return None, None
-    if not isinstance(k, int) or k <= 0 or k > X.shape[0]:
-        return None, None
-    if not isinstance(iterations, int) or iterations <= 0:
-        return None, None
+        return None, None, None
+    if not isinstance(g, np.ndarray) or len(g.shape) != 2:
+        return None, None, None
+    if X.shape[0] != g.shape[1]:
+        return None, None, None
     
     n, d = X.shape
-    
-    # Initialize centroids using a multivariate uniform distribution
-    min_vals = np.min(X, axis=0)
-    max_vals = np.max(X, axis=0)
-    C = np.random.uniform(min_vals, max_vals, size=(k, d))
-    
-    for _ in range(iterations):
-        # Compute distances and assign each point to the closest centroid
-        distances = np.linalg.norm(X[:, np.newaxis] - C, axis=2)
-        clss = np.argmin(distances, axis=1)
-        
-        new_C = np.copy(C)
-        
-        for i in range(k):
-            cluster_points = X[clss == i]
-            if cluster_points.shape[0] == 0:
-                # Reinitialize centroid if no points are assigned to it
-                new_C[i] = np.random.uniform(min_vals, max_vals, size=(1, d))
-            else:
-                new_C[i] = np.mean(cluster_points, axis=0)
-        
-        # Check for convergence
-        if np.all(C == new_C):
-            break
-        
-        C = new_C
-    
-    return C, clss
+    k = g.shape[0]
+
+    # Compute the new priors
+    Nk = np.sum(g, axis=1)
+    pi = Nk / n
+
+    # Compute the new means
+    m = np.dot(g, X) / Nk[:, np.newaxis]
+
+    # Compute the new covariance matrices using a single loop
+    S = np.zeros((k, d, d))
+    for i in range(k):
+        X_centered = X - m[i]  # Centered data points
+        S[i] = np.dot(g[i] * X_centered.T, X_centered) / Nk[i]
+
+    return pi, m, S
