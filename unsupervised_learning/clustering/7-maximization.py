@@ -3,17 +3,13 @@
 import numpy as np
 
 def maximization(X, g):
-    # Ensure X is a 2D array (n, d)
+    # Check if X is valid (shape should be (n, d))
     if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None, None
-    
-    n, d = X.shape  # Extract the number of data points (n) and features (d)
-    
-    # Ensure g is a 2D array (k, n)
+    # Check if g is valid (shape should be (k, n))
     if not isinstance(g, np.ndarray) or len(g.shape) != 2:
         return None, None, None
-    
-    # Ensure the number of data points in X matches the number of data points in g
+    # Ensure that the number of data points in X matches the number of data points in g
     if X.shape[0] != g.shape[1]:
         return None, None, None
 
@@ -23,6 +19,7 @@ def maximization(X, g):
         return None, None, None
     g = g / g_sum  # Normalize
 
+    n, d = X.shape  # number of data points (n), number of features (d)
     k = g.shape[0]  # number of clusters
 
     # 1. Update priors (pi)
