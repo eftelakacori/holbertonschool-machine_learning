@@ -5,7 +5,7 @@ import numpy as np
 def maximization(X, g):
     """
     Performs the maximization step in the EM algorithm for a GMM.
-    
+
     Parameters:
     X : numpy.ndarray of shape (n, d) - dataset
     g : numpy.ndarray of shape (k, n) - posterior probabilities for each data point in each cluster
@@ -22,11 +22,20 @@ def maximization(X, g):
     if X.shape[0] != g.shape[1]:
         return None, None, None
 
+    # Kontrollojmë nëse probabilitetet në g janë të vlefshme
+    if not np.all((g >= 0) & (g <= 1)):
+        return None, None, None
+
     n, d = X.shape
     k = g.shape[0]
 
     # Compute the new priors
     Nk = np.sum(g, axis=1)
+
+    # Kontroll nëse ka klasë pa mostra
+    if np.any(Nk == 0):
+        return None, None, None
+
     pi = Nk / n
 
     # Compute the new means
