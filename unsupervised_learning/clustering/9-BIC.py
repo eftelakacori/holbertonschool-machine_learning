@@ -5,10 +5,10 @@ import numpy as np
 def maximization(X, g):
     """
     Maximization step of the EM algorithm for a GMM.
-    
+
     X: numpy.ndarray of shape (n, d) containing the dataset.
     g: numpy.ndarray of shape (k, n) containing the posterior probabilities.
-    
+
     Returns:
     pi: numpy.ndarray of shape (k,) containing the updated priors for each cluster.
     m: numpy.ndarray of shape (k, d) containing the updated centroids (means).
