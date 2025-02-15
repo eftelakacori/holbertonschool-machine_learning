@@ -1,25 +1,15 @@
-#!/usr/bin/env python3
-"""Expectation-Maximization Step (Maximization) for Gaussian Mixture Model (GMM)"""
 import numpy as np
 
 def maximization(X, g):
-    # Check if X is valid (shape should be (n, d))
+    # Check if X is valid
     if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None, None
-    # Check if g is valid (shape should be (k, n))
     if not isinstance(g, np.ndarray) or len(g.shape) != 2:
         return None, None, None
-    # Ensure that the number of data points in X matches the number of data points in g
     if X.shape[0] != g.shape[1]:
         return None, None, None
 
-    # Normalize g to make sure it is a valid posterior probability distribution
-    g_sum = g.sum(axis=0)
-    if np.any(g_sum == 0):  # If any column sums to zero, it's invalid
-        return None, None, None
-    g = g / g_sum  # Normalize
-
-    n, d = X.shape  # number of data points (n), number of features (d)
+    n, d = X.shape  # number of data points, number of features
     k = g.shape[0]  # number of clusters
 
     # 1. Update priors (pi)
