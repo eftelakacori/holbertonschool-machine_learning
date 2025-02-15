@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-import numpy as np
-
+"""That calculates the maximization"""
 
 def maximization(X, g):
     """
