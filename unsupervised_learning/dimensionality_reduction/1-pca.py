@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
+"""That performs PCA on a dataset"""
 import numpy as np
+
 
 def pca(X, ndim):
     """
-    Perform PCA on the dataset X to reduce it to the desired number of dimensions (ndim).
+    Perform PCA on the dataset X to reduce it.
 
     Parameters:
     - X: numpy.ndarray of shape (n, d) where n is the number of data points
@@ -10,7 +13,8 @@ def pca(X, ndim):
     - ndim: The number of dimensions to reduce X to.
 
     Returns:
-    - T: numpy.ndarray of shape (n, ndim) containing the transformed version of X.
+    - T: numpy.ndarray of shape (n, ndim)
+        containing the transformed version of X.
     """
     # Step 1: Center the data (mean zero)
     X_centered = X - np.mean(X, axis=0)
