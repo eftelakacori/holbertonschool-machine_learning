@@ -2,18 +2,19 @@
 """That performs PCA on a dataset"""
 import numpy as np
 
+
 def pca(X, var=0.95):
     """
     Perform Principal Component Analysis (PCA) on the dataset X
     to retain a fraction of the total variance specified by var.
-    
+
     Parameters:
-    - X: numpy.ndarray of shape (n, d) where n is the number of data points 
+    - X: numpy.ndarray of shape (n, d) where n is the number of data points
          and d is the number of dimensions of each data point.
     - var: Fraction of variance to retain (default is 0.95).
 
     Returns:
-    - W: numpy.ndarray of shape (d, nd) where nd is the number of dimensions 
+    - W: numpy.ndarray of shape (d, nd) where nd is the number of dimensions
          after reduction (which keeps the specified variance).
     """
     # Compute the covariance matrix of the centered data
@@ -23,7 +24,7 @@ def pca(X, var=0.95):
     # Eigenvalue decomposition
     eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
 
-    # Sort the eigenvalues in descending order and get the corresponding eigenvectors
+    # Sort the eigenvalues in descending order
     sorted_indices = np.argsort(eigenvalues)[::-1]
     eigenvalues = eigenvalues[sorted_indices]
     eigenvectors = eigenvectors[:, sorted_indices]
