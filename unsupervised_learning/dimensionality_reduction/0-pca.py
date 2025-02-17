@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Performs K-means Module"""
+"""That performs PCA on a dataset"""
 import numpy as np
 
 def pca(X, var=0.95):
