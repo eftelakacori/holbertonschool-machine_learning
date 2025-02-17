@@ -5,7 +5,8 @@ import numpy as np
 
 def pca(X, ndim):
     """
-    Perform PCA on the dataset X to reduce it.
+    Perform PCA on the dataset X to reduce it to
+        the desired number of dimensions (ndim).
 
     Parameters:
     - X: numpy.ndarray of shape (n, d) where n is the number of data points
@@ -14,7 +15,7 @@ def pca(X, ndim):
 
     Returns:
     - T: numpy.ndarray of shape (n, ndim)
-        containing the transformed version of X.
+         containing the transformed version of X.
     """
     # Step 1: Center the data (mean zero)
     X_centered = X - np.mean(X, axis=0)
@@ -29,10 +30,15 @@ def pca(X, ndim):
     sorted_indices = np.argsort(eigenvalues)[::-1]
     eigenvalues = eigenvalues[sorted_indices]
     eigenvectors = eigenvectors[:, sorted_indices]
+
     # Step 5: Select the top `ndim` eigenvectors
     W = eigenvectors[:, :ndim]
 
     # Step 6: Transform the data into the new lower-dimensional space
     T = np.dot(X_centered, W)
+
+    # Print out the transformed data and its shape for debugging
+    print('Transformed data shape:', T.shape)
+    print('Transformed data (first 5 rows):\n', T[:5, :])
 
     return T
