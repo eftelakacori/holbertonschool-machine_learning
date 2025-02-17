@@ -2,12 +2,11 @@
 """Performs K-means Module"""
 import numpy as np
 
-
 def pca(X, var=0.95):
     """
     Perform Principal Component Analysis (PCA) on the dataset X
     to retain a fraction of the total variance specified by var.
-
+    
     Parameters:
     - X: numpy.ndarray of shape (n, d) where n is the number of data points 
          and d is the number of dimensions of each data point.
@@ -32,6 +31,9 @@ def pca(X, var=0.95):
     # Calculate the cumulative variance explained
     explained_variance = eigenvalues / np.sum(eigenvalues)
     cumulative_variance = np.cumsum(explained_variance)
+
+    # Print out the cumulative variance to debug
+    print(f"Cumulative Variance Explained: {cumulative_variance}")
 
     # Find the number of components to retain the desired variance
     num_components = np.argmax(cumulative_variance >= var) + 1
