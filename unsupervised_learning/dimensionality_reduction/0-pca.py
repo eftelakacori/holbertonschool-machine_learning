@@ -2,6 +2,7 @@
 """That performs PCA on a dataset"""
 import numpy as np
 
+
 def pca(X, var=0.95):
     cov = np.cov(X.T)
     eigvals, eigvecs = np.linalg.eigh(cov)
