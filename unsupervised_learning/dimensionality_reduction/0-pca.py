@@ -2,26 +2,26 @@
 """That performs PCA on a dataset"""
 import numpy as np
 
+
 def pca(X, var=0.95):
-    # Step 1: Compute the covariance matrix
-    cov_matrix = np.cov(X, rowvar=False)
-
-    # Step 2: Perform eigen decomposition
-    eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
-
-    # Step 3: Sort eigenvalues and eigenvectors in descending order
-    sorted_indices = np.argsort(eigenvalues)[::-1]
-    eigenvalues = eigenvalues[sorted_indices]
-    eigenvectors = eigenvectors[:, sorted_indices]
-
-    # Step 4: Calculate the cumulative variance
-    total_variance = np.sum(eigenvalues)
-    cumulative_variance = np.cumsum(eigenvalues) / total_variance
-
-    # Step 5: Find the number of components needed to maintain the specified variance
-    num_components = np.argmax(cumulative_variance >= var) + 1
-
-    # Step 6: Select the first 'num_components' eigenvectors
-    W = eigenvectors[:, :num_components]
-
-    return W
+    """
+    Kryen PCA mbi datasetin X.
+    X: numpy.ndarray me formën (n, d) ku n është numri i
+       pikave dhe d numri i dimensioneve. Të gjitha kanë mesatare 0.
+    var: fraksioni i variancës që duhet ruajtur.
+    Kthen matricën W me formën (d, nd) ku nd është dimensionaliteti
+    i ri që ruan var-fraksionin e variancës.
+    """
+    # Llogarit matricën e kovariancës
+    cov = np.cov(X, rowvar=False)
+    # Merr vlerat dhe vektorët eigen
+    eigvals, eigvecs = np.linalg.eigh(cov)
+    # Rendit në rend zbritës sipas vlerave eigen
+    idx = np.argsort(eigvals)[::-1]
+    eigvals = eigvals[idx]
+    eigvecs = eigvecs[:, idx]
+    # Llogarit variancën kumulative
+    cum_var = np.cumsum(eigvals) / np.sum(eigvals)
+    nd = np.argmax(cum_var >= var) + 1
+    # Kthen matricën e peshave për komponentët e zgjedhur
+    return eigvecs[:, :nd]
