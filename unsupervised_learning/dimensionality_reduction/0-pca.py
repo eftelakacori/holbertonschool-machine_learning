@@ -1,42 +1,49 @@
 #!/usr/bin/env python3
 """That performs PCA on a dataset"""
-import numpy as np
 
 
 def pca(X, var=0.95):
     """
-    Perform PCA on the dataset X to retain a fraction var of the variance.
-    Parameters:
-    - X: numpy.ndarray of shape (n, d), where n is the number of data points
-      and d is the number of features.
-    - var: float, fraction of variance to retain.
+    Parametrat:
+    - X: numpy.ndarray me formë (n, d), ku n është
+    numri i pikave të të dhënave
+      dhe d është numri i tipareve.
+    - var: float, pjesa e variancës që do të ruhet.
 
-    Returns:
-    - W: numpy.ndarray of shape (d, nd), weight matrix that projects the data
-      onto the new space with reduced dimensions.
+    Kthen:
+    - W: numpy.ndarray me formë (d, nd), matrica
+     e pesheve që projeksion të të dhënave
+      në hapësirën e re me dimensione të zvogëluara.
     """
 
-    # Step 1: Compute the covariance matrix
+    # Hapi 1: Llogaritja e matricës së kovariancës
     cov_matrix = np.cov(X.T)
 
-    # Step 2: Compute eigenvalues and eigenvectors of the covariance matrix
+    """Hapi 2: Llogaritja e eigenvlerave dhe 
+    eigenvektorëve të matricës së kovariancës"""
     eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
 
-    """ Step 3: Sort eigenvalues in descending order
-     and get the corresponding eigenvectors"""
+    """Hapi 3: Renditja e eigenvlerave në rend
+    descending dhe përzgjedhja e eigenvektorëve përkatës"""
+    
     sorted_indices = np.argsort(eigenvalues)[::-1]
     eigenvalues = eigenvalues[sorted_indices]
     eigenvectors = eigenvectors[:, sorted_indices]
 
-    # Step 4: Calculate the cumulative variance
+    # Hapi 4: Llogaritja e variancës kumulative
     total_variance = np.sum(eigenvalues)
     cumulative_variance = np.cumsum(eigenvalues) / total_variance
 
-    """Step 5: Select the number of components
-     that preserve the required variance"""
+    # Debugging: Shiko sa komponentë po përzgjidhen dhe sa variancë po ruhet
+    print(f"Varianca totale: {total_variance}")
+    print(f"Varianca kumulative: {cumulative_variance}")
+    
+    # Hapi 5: Zgjedh numrin e komponentëve që ruajnë variancën e kërkuar
     nd = np.where(cumulative_variance >= var)[0][0] + 1
 
-    # Step 6: Select the corresponding eigenvectors (principal components)
+    print(f"Komponentët e përzgjedhur: {nd}")
+
+    # Hapi 6: Zgjedh eigenvektorët përkatës (komponentët kryesorë)
     W = eigenvectors[:, :nd]
 
     return W
