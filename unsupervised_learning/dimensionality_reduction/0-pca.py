@@ -2,6 +2,7 @@
 """Performs PCA on a dataset"""
 import numpy as np
 
+
 def pca(X, var=0.95):
     """
     Perform Principal Component Analysis (PCA) on the dataset X
