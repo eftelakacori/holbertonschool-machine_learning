@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""That initializes all variables required to calculate """
+"""That performs PCA on a dataset"""
+
 
 import numpy as np
 
