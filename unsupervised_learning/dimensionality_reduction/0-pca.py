@@ -2,6 +2,7 @@
 """That performs PCA on a dataset"""
 import numpy as np
 
+
 def pca(X, var=0.95):
     """
     Performs PCA on dataset X.
@@ -19,20 +20,20 @@ def pca(X, var=0.95):
     """
     # Compute covariance matrix of X
     cov_matrix = np.cov(X, rowvar=False)
-    
+
     # Compute eigenvalues and eigenvectors
     eigvals, eigvecs = np.linalg.eigh(cov_matrix)
-    
+
     # Sort eigenvalues and eigenvectors in descending order
     sorted_idx = np.argsort(eigvals)[::-1]
     eigvals = eigvals[sorted_idx]
     eigvecs = eigvecs[:, sorted_idx]
-    
+
     # Compute cumulative variance ratio
     cumulative_var = np.cumsum(eigvals) / np.sum(eigvals)
-    
+
     # Find minimum number of components to reach desired variance
     nd = np.argmax(cumulative_var >= var) + 1
-    
+
     # Return top nd eigenvectors as the weights matrix
     return eigvecs[:, :nd]
