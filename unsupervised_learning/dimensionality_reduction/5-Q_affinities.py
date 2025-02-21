@@ -9,12 +9,15 @@ representation of data.
 
 import numpy as np
 
+
 def Q_affinities(Y):
     """
-    Calculates the Q affinities for the low-dimensional representation of X.
+    Calculates the Q affinities for
+    the low-dimensional representation of X.
 
     Parameters:
-      Y (numpy.ndarray): Shape (n, ndim), the low-dimensional representation of X.
+      Y (numpy.ndarray): Shape (n, ndim),
+      the low-dimensional representation of X.
 
     Returns:
       Q (numpy.ndarray): Shape (n, n), the Q affinities matrix.
