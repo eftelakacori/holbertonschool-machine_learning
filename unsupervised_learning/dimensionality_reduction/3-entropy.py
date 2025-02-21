@@ -5,25 +5,35 @@ import numpy as np
 
 def HP(Di, beta):
     """
-    Calculates the Shannon entropy (base 2) and the P affinities
-    for one data point.
+    Calculate the Shannon entropy and P affinities relative
+     to a data point.
 
     Parameters:
-      Di : numpy.ndarray of shape (n-1,)
-           The squared distances from one data point to all others.
-      beta : numpy.ndarray of shape (1,) or scalar
-           The beta value for the Gaussian distribution
-           (beta = 1/(2*sigma^2)).
+    Di (numpy.ndarray): Pairwise distances between a data
+     point and all other points except itself, of shape (n - 1,).
+    beta (numpy.ndarray): Beta value for the Gaussian
+    distribution, of shape (1,).
 
     Returns:
-      Hi : float
-           The Shannon entropy (base 2) of the points.
-      Pi : numpy.ndarray of shape (n-1,)
-           The P affinities for the points.
+    Hi (float): Shannon entropy of the points.
+    Pi (numpy.ndarray): P affinities of the points, of shape (n - 1,).
     """
-    P = np.exp(-beta * Di)
-    sumP = np.sum(P)
-    H = np.log(sumP) + beta * np.sum(Di * P) / sumP
-    H = H / np.log(2)
-    P = P / sumP
-    return H, P
+    # Step 1: Compute the P affinities using a Gaussian distribution
+    Pi = np.exp(-Di * beta)
+    Pi_sum = np.sum(Pi)
+    Pi = Pi / Pi_sum  # Normalize to get probabilities
+
+    # Step 2: Compute the Shannon entropy
+    Hi = -np.sum(Pi * np.log2(Pi + 1e-12))
+
+    return Hi, Pi
+
+
+# Example usage (as provided in the main script)
+if __name__ == "__main__":
+    X = np.loadtxt("mnist2500_X.txt")
+    X = pca(X, 50)
+    D, P, betas, _ = P_init(X, 30.0)
+    H0, P[0, 1:] = HP(D[0, 1:], betas[0])
+    print(H0)
+    print(P[0])
