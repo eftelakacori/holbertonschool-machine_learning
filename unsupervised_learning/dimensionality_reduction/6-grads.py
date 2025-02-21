@@ -19,13 +19,13 @@ def grads(Y, P):
     """
     # Import the Q_affinities function
     Q_affinities = __import__('5-Q_affinities').Q_affinities
-
+    
     # Compute Q affinities for Y
     Q, num = Q_affinities(Y)  # Q has shape (n, n)
-
+    
     # Ensure no division by zero (clip minimum value to avoid instability)
     PQ_diff = P - Q
-
+    
     # Compute pairwise squared Euclidean distances in Y
     sum_Y = np.sum(np.square(Y), axis=1)
     distances = np.add(np.add(-2 * np.dot(Y, Y.T), sum_Y).T, sum_Y)
