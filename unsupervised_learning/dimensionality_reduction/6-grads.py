@@ -1,6 +1,31 @@
 #!/usr/bin/env python3
 import numpy as np
-Q_affinities = __import__('5-Q_affinities').Q_affinities
+
+
+def Q_affinities(Y):
+    """
+    Compute the Q affinities of Y.
+
+    Parameters:
+    Y (numpy.ndarray): Low-dimensional transformation of X, of shape (n, ndim).
+
+    Returns:
+    Q (numpy.ndarray): Q affinities of Y, of shape (n, n).
+    """
+    n = Y.shape[0]
+    Q = np.zeros((n, n))
+
+    # Compute pairwise squared Euclidean distances
+    for i in range(n):
+        diff = Y[i] - Y  # Shape: (n, ndim)
+        squared_distances = np.sum(diff**2, axis=1)  # Shape: (n,)
+        Q[i] = (1 + squared_distances) ** (-1)
+
+    # Normalize Q to sum to 1 (excluding diagonal)
+    np.fill_diagonal(Q, 0)  # Set diagonal to 0
+    Q /= np.sum(Q)  # Normalize
+
+    return Q
 
 
 def grads(Y, P):
