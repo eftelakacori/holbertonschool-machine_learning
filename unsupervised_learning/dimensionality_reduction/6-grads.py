@@ -1,50 +1,45 @@
 #!/usr/bin/env python3
-"""That calculates the gradients of Y"""
 import numpy as np
+Q_affinities = __import__('5-Q_affinities').Q_affinities
 
 
 def grads(Y, P):
     """
-    Calculates the gradients of Y and computes the Q affinities.
+    Calculate the gradients of Y.
 
     Parameters:
-      Y: numpy.ndarray of shape (n, ndim)
-         The low-dimensional representation.
-      P: numpy.ndarray of shape (n, n)
-         The P affinities computed in t-SNE.
+    Y (numpy.ndarray): Low-dimensional transformation of X, of shape (n, ndim).
+    P (numpy.ndarray): P affinities of X, of shape (n, n).
 
     Returns:
-      dY: numpy.ndarray of shape (n, ndim)
-          The gradient of Y (do not multiply by 4).
-      Q: numpy.ndarray of shape (n, n)
-          The Q affinities computed from Y.
+    dY (numpy.ndarray): Gradients of Y, of shape (n, ndim).
+    Q (numpy.ndarray): Q affinities of Y, of shape (n, n).
     """
-    # Import the Q affinities function
-    Q_affinities = __import__('5-Q_affinities').Q_affinities
-    n = Y.shape[0]
+    # Step 1: Compute Q affinities
+    Q = Q_affinities(Y)
 
-    # Compute Q affinities for Y
-    Q = Q_affinities(Y)  # Q has shape (n, n)
+    # Step 2: Compute gradients
+    n, ndim = Y.shape
+    dY = np.zeros_like(Y)
 
-    # Compute pairwise squared Euclidean distances in Y
-    sum_Y = np.sum(Y**2, axis=1)
-    # D[i,j] = ||Y[i]-Y[j]||^2
-    distances = np.add(np.add(-2 * np.dot(Y, Y.T), sum_Y).T, sum_Y)
-
-    # Compute the factor: 1 / (1 + ||y_i - y_j||^2)
-    factor = 1 / (1 + distances)
-
-    # Compute differences between all pairs: shape (n, n, ndim)
-    diff = Y[:, np.newaxis, :] - Y[np.newaxis, :, :]
-
-    # Expand (P - Q) to match diff's shape: (n, n, 1)
-    PQ_diff = (P - Q)[:, :, np.newaxis]
-
-    # Expand factor to shape (n, n, 1)
-    factor_exp = factor[:, :, np.newaxis]
-
-    # Compute gradients:
-    # dY[i] = sum_j (P_ij - Q_ij) * factor[i,j] * (Y[i] - Y[j])
-    dY = np.sum(PQ_diff * factor_exp * diff, axis=1)
+    for i in range(n):
+        diff = Y[i] - Y  # Shape: (n, ndim)
+        pq_diff = (P[i] - Q[i])[:, np.newaxis]  # Shape: (n, 1)
+        dY[i] = np.sum(pq_diff * diff, axis=0)  # Sum over j
 
     return dY, Q
+
+
+# Example usage (as provided in the main script)
+if __name__ == "__main__":
+    np.random.seed(0)
+    X = np.loadtxt("mnist2500_X.txt")
+    X = pca(X, 50)
+    P = P_affinities(X)
+    Y = np.random.randn(X.shape[0], 2)
+    dY, Q = grads(Y, P)
+    print('dY:', dY.shape)
+    print(dY)
+    print('Q:', Q.shape)
+    print(Q)
+    print(np.sum(Q))
