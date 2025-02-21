@@ -1,27 +1,23 @@
 #!/usr/bin/env python3
-"""That performs PCA on a dataset"""
+"""A function that performs PCA on a dataset"""
 import numpy as np
 
 
 def pca(X, var=0.95):
-    """
-    Kryen PCA mbi datasetin X.
-    X: numpy.ndarray me formën (n, d) ku n është numri i
-       pikave dhe d numri i dimensioneve. Të gjitha kanë mesatare 0.
-    var: fraksioni i variancës që duhet ruajtur.
-    Kthen matricën W me formën (d, nd) ku nd është dimensionaliteti
-    i ri që ruan var-fraksionin e variancës.
-    """
-    # Llogarit matricën e kovariancës
-    cov = np.cov(X, rowvar=False)
-    # Merr vlerat dhe vektorët eigen
-    eigvals, eigvecs = np.linalg.eigh(cov)
-    # Rendit në rend zbritës sipas vlerave eigen
-    idx = np.argsort(eigvals)[::-1]
-    eigvals = eigvals[idx]
-    eigvecs = eigvecs[:, idx]
-    # Llogarit variancën kumulative
-    cum_var = np.cumsum(eigvals) / np.sum(eigvals)
-    nd = np.argmax(cum_var >= var) + 1
-    # Kthen matricën e peshave për komponentët e zgjedhur
-    return eigvecs[:, :nd]
+    """A function that performs PCA on a dataset
+    X: a numpy.ndarray of shape (n, d)
+    n: the number of data points
+    d: the number of dimensions in each point
+    var: the fraction of the variance that PCA
+    transformation should maintain
+    return: W the weight matrix that maintains var
+    fraction of X's original variance"""
+    u, s, vh = np.linalg.svd(X)
+    cum = np.cumsum(s)
+    thresh = cum[len(cum) - 1] * var
+    mask = np.where(thresh > cum)
+    var = cum[mask]
+    idx = len(var) + 1
+    W = vh.T
+    Wr = W[:, 0:idx]
+    return Wr
