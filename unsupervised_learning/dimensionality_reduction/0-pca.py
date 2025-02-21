@@ -4,6 +4,7 @@
 
 import numpy as np
 
+
 def pca(X, var=0.95):
     """
     Performs PCA on dataset X.
@@ -29,11 +30,11 @@ def pca(X, var=0.95):
     sorted_idx = np.argsort(eigvals)[::-1]
     eigvals = eigvals[sorted_idx]
     eigvecs = eigvecs[:, sorted_idx]
-    
+
     # Compute cumulative variance ratio
     cumulative_var = np.cumsum(eigvals) / np.sum(eigvals)
 
-    """Find minimum number of components to 
+    """Find minimum number of components to
     reach desired variance"""
     nd = np.argmax(cumulative_var >= var) + 1
 
