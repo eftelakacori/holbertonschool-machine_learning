@@ -1,46 +1,27 @@
 #!/usr/bin/env python3
+"""That performs PCA on a dataset"""
 import numpy as np
 
-
 def pca(X, var=0.95):
-    """
-    Performs PCA on a dataset to reduce dimensionality while
-    preserving variance.
-
-    Parameters:
-    X (numpy.ndarray): Dataset of shape (n, d) where n is the
-    number of samples and d is the number of features.
-    var (float): Fraction of variance to preserve (default is
-    0.95).
-
-    Returns:
-    numpy.ndarray: Weight matrix W of shape (d, nd), where nd
-    is the new dimensionality.
-    """
-    # 1. Calculate the covariance matrix
+    # Step 1: Compute the covariance matrix
     cov_matrix = np.cov(X, rowvar=False)
 
-    # 2. Compute the eigenvalues and eigenvectors
+    # Step 2: Perform eigen decomposition
     eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
 
-    # 3. Sort the eigenvalues and corresponding eigenvectors
-    sorted_indices = np.argsort(eigenvalues)[::-1] 
-    sorted_eigenvalues = eigenvalues[sorted_indices]
-    sorted_eigenvectors = eigenvectors[:, sorted_indices]
+    # Step 3: Sort eigenvalues and eigenvectors in descending order
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    eigenvalues = eigenvalues[sorted_indices]
+    eigenvectors = eigenvectors[:, sorted_indices]
 
-    # 4. Check the cumulative variance to understand
-    # how much variance is captured
-    cumulative_variance = np.cumsum(sorted_eigenvalues) / np.sum(
-        sorted_eigenvalues)
-    print(f'Cumulative variance: {cumulative_variance}')  
+    # Step 4: Calculate the cumulative variance
+    total_variance = np.sum(eigenvalues)
+    cumulative_variance = np.cumsum(eigenvalues) / total_variance
 
-    # 5. Find the number of components that preserve
-    # the required fraction of variance
-    nd = np.searchsorted(cumulative_variance, var) + 1 
+    # Step 5: Find the number of components needed to maintain the specified variance
+    num_components = np.argmax(cumulative_variance >= var) + 1
 
-    # 6. Select the first `nd` eigenvectors to form
-    # the weight matrix W
-    W = sorted_eigenvectors[:, :nd]
+    # Step 6: Select the first 'num_components' eigenvectors
+    W = eigenvectors[:, :num_components]
 
-    # Return the weight matrix
     return W
