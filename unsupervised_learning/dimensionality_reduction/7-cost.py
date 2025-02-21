@@ -6,18 +6,18 @@ import numpy as np
 def cost(P, Q):
     """
     Calculates the t-SNE cost (KL divergence between P and Q).
-    
+
     Parameters:
       P: numpy.ndarray of shape (n, n)
          The P affinities.
       Q: numpy.ndarray of shape (n, n)
          The Q affinities.
-    
+
     Returns:
       C: float
          The cost of the t-SNE transformation.
          Computed as: C = sum(P * log(P / Q))
-         
+
          Small values (e.g., 1e-12) are used to avoid division by zero.
     """
     eps = 1e-12
