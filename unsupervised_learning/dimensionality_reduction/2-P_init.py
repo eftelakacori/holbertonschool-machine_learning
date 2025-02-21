@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""That performs PCA on a dataset"""
+"""That initializes all variables required to calculate """
 
 import numpy as np
 
@@ -7,14 +7,14 @@ import numpy as np
 def P_init(X, perplexity):
     """
     Initializes variables for computing P affinities in t-SNE.
-    
+
     Parameters:
       X : numpy.ndarray of shape (n, d)
           Dataset to be transformed. Each of the n points is in d dimensions.
           All dimensions have mean 0.
       perplexity : float
           The perplexity that all Gaussian distributions should have.
-    
+
     Returns:
       D : numpy.ndarray of shape (n, n)
           Squared pairwise distance matrix between data points.
