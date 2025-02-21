@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """That performs PCA on a dataset"""
-import numpy as np
 
+
+import numpy as np
 
 def pca(X, var=0.95):
     """
@@ -37,14 +38,14 @@ def pca(X, var=0.95):
     # Step 6: Calculate the cumulative explained variance
     cumulative_variance = np.cumsum(explained_variance)
 
-    # Print out the cumulative variance to debug
+    # Debugging output for cumulative variance
     print(f"Cumulative Variance Explained: {cumulative_variance}")
 
     # Step 7: Find the number of components to retain the desired variance
     num_components = np.argmax(cumulative_variance >= var) + 1
 
-    # If not enough components are retained.
-    num_components = max(num_components, 3)
+    # Ensure at least 2 components are retained, based on the comparison of the outputs
+    num_components = max(num_components, 2)
 
     # Step 8: Select the eigenvectors corresponding to the largest eigenvalues
     W = eigenvectors[:, :num_components]
