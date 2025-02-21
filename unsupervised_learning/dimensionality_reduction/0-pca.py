@@ -4,14 +4,26 @@
 
 import numpy as np
 
+
 def pca(X, var=0.95):
-    # Kryej SVD-në në X (të dhënat prapë të centruar)
-    U, S, Vt = np.linalg.svd(X, full_matrices=False)
-    # Llogarit përqindjen e variancës së shpjeguar nga secili komponent
-    var_exp = S**2 / np.sum(S**2)
-    cum_var = np.cumsum(var_exp)
-    # Zgjidh numrin minimal të komponentëve që mbajnë të paktën 'var' të variancës
+    """
+    Kryen PCA mbi datasetin X.
+    X: numpy.ndarray me formën (n, d) ku n është numri i
+       pikave dhe d numri i dimensioneve. Të gjitha kanë mesatare 0.
+    var: fraksioni i variancës që duhet ruajtur.
+    Kthen matricën W me formën (d, nd) ku nd është dimensionaliteti
+    i ri që ruan var-fraksionin e variancës.
+    """
+    # Llogarit matricën e kovariancës
+    cov = np.cov(X, rowvar=False)
+    # Merr vlerat dhe vektorët eigen
+    eigvals, eigvecs = np.linalg.eigh(cov)
+    # Rendit në rend zbritës sipas vlerave eigen
+    idx = np.argsort(eigvals)[::-1]
+    eigvals = eigvals[idx]
+    eigvecs = eigvecs[:, idx]
+    # Llogarit variancën kumulative
+    cum_var = np.cumsum(eigvals) / np.sum(eigvals)
     nd = np.argmax(cum_var >= var) + 1
-    # Kthe matricën e peshave: kolona jone janë komponentët kryesorë
-    W = Vt[:nd].T
-    return W
+    # Kthen matricën e peshave për komponentët e zgjedhur
+    return eigvecs[:, :nd]
