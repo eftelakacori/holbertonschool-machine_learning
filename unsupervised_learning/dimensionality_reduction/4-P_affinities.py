@@ -1,66 +1,58 @@
 #!/usr/bin/env python3
 """
-Module for calculating symmetric P affinities in t-SNE.
-
-This module contains the function `P_affinities`, which computes
-the probability distribution P using pairwise similarities and
-perplexity constraints.
+Calculates the symmetric P affinities
 """
-
 import numpy as np
-
-
 P_init = __import__('2-P_init').P_init
 HP = __import__('3-entropy').HP
 
 
 def P_affinities(X, tol=1e-5, perplexity=30.0):
     """
-    Calculates the symmetric P affinities of a dataset.
-
-    Parameters:
-      X (numpy.ndarray): Shape (n, d), dataset to be transformed.
-      tol (float): Tolerance for the difference in Shannon entropy.
-      perplexity (float): Desired perplexity value.
-
-    Returns:
-      P (numpy.ndarray): Shape (n, n), symmetric P affinities matrix.
+    Calculates the symmetric P affinities of a data set
+    :param X: numpy.ndarray of shape (n, d) containing the dataset to be
+    transformed by t-SNE
+        n is the number of data points
+        d is the number of dimensions in each point
+    :param tol: the maximum tolerance allowed (inclusive) for the difference
+    in Shannon entropy from perplexity for all Gaussian distributions
+    :param perplexity: perplexity that all Gaussian distributions should have
+    :return: P, a numpy.ndarray of shape (n, n) containing the symmetric P
+    affinities
     """
     n, d = X.shape
-    P, betas, D = P_init(X)  # Initialize P, betas, and distance matrix
+    D, P, betas, H = P_init(X, perplexity)
 
-    log_perp = np.log(perplexity)
+    if n == 0:
+        return P
 
     for i in range(n):
-        beta_min = None
-        beta_max = None
-        beta = betas[i]
+        copy = D[i].copy()
+        copy = np.delete(copy, i, axis=0)
+        Hi, Pi = HP(copy, betas[i])
+        Hdiff = Hi - H
 
-        # Perform binary search to find the optimal beta
-        while True:
-            Hi, Pi = HP(D[i], beta)
-            diff = Hi - log_perp
+        low = None
+        high = None
 
-            if np.abs(diff) <= tol:
-                break
-
-            if diff > 0:  # Entropy too high, increase beta
-                beta_min = beta
-                if beta_max is None:
-                    beta *= 2
+        while np.abs(Hdiff) > tol:
+            if Hdiff > 0:
+                low = betas[i, 0]
+                if high is None:
+                    betas[i] = betas[i] * 2
                 else:
-                    beta = (beta + beta_max) / 2
-            else:  # Entropy too low, decrease beta
-                beta_max = beta
-                if beta_min is None:
-                    beta /= 2
-                else:
-                    beta = (beta + beta_min) / 2
+                    betas[i] = (betas[i] + high) / 2
 
+            else:
+                high = betas[i, 0]
+                if low is None:
+                    betas[i] = betas[i] / 2
+                else:
+                    betas[i] = (betas[i] + low) / 2
+
+            Hi, Pi = HP(copy, betas[i])
+            Hdiff = Hi - H
+        Pi = np.insert(Pi, i, 0)
         P[i] = Pi
-        betas[i] = beta
-
-    # Compute the symmetric P matrix
-    P = (P + P.T) / (2 * n)
-
+    P = (P.T + P) / (2 * n)
     return P
