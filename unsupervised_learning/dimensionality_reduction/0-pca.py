@@ -5,49 +5,37 @@ import numpy as np
 
 def pca(X, var=0.95):
     """
-    Perform Principal Component Analysis (PCA) on the dataset X
-    to retain a fraction of the total variance specified by var.
-
+    Perform PCA on the dataset X to retain a fraction var of the variance.
+    
     Parameters:
-    - X: numpy.ndarray of shape (n, d) where n is the number of data points
-         and d is the number of dimensions of each data point.
-    - var: Fraction of variance to retain (default is 0.95).
-
+    - X: numpy.ndarray of shape (n, d), where n is the number of data points
+      and d is the number of features.
+    - var: float, fraction of variance to retain.
+    
     Returns:
-    - W: numpy.ndarray of shape (d, nd) where nd is the number of dimensions
-         after reduction (which keeps the specified variance).
+    - W: numpy.ndarray of shape (d, nd), weight matrix that projects the data
+      onto the new space with reduced dimensions.
     """
-    # Step 1: Center the data (mean zero)
-    X_centered = X - np.mean(X, axis=0)
 
-    # Step 2: Compute the covariance matrix
-    cov_matrix = np.cov(X_centered, rowvar=False)
+    # Step 1: Compute the covariance matrix
+    cov_matrix = np.cov(X.T)
 
-    # Step 3: Eigenvalue decomposition
+    # Step 2: Compute eigenvalues and eigenvectors of the covariance matrix
     eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
 
-    # Step 4: Sort the eigenvalues in descending order
+    # Step 3: Sort eigenvalues in descending order and get the corresponding eigenvectors
     sorted_indices = np.argsort(eigenvalues)[::-1]
     eigenvalues = eigenvalues[sorted_indices]
     eigenvectors = eigenvectors[:, sorted_indices]
 
-    # Step 5: Calculate the explained variance
-    explained_variance = eigenvalues / np.sum(eigenvalues)
+    # Step 4: Calculate the cumulative variance
+    total_variance = np.sum(eigenvalues)
+    cumulative_variance = np.cumsum(eigenvalues) / total_variance
 
-    # Step 6: Calculate the cumulative explained variance
-    cumulative_variance = np.cumsum(explained_variance)
+    # Step 5: Select the number of components that preserve the required variance
+    nd = np.where(cumulative_variance >= var)[0][0] + 1
+ 
+    # Step 6: Select the corresponding eigenvectors (principal components)
+    W = eigenvectors[:, :nd]
 
-    # Print out the cumulative variance to debug
-    print(f"Cumulative Variance Explained: {cumulative_variance}")
-
-    # Step 7: Find the number of components to retain the desired variance
-    num_components = np.argmax(cumulative_variance >= var) + 1
-
-    # If not enough components are retained.
-    num_components = max(num_components, 3)
-
-    # Step 8: Select the eigenvectors corresponding to the largest eigenvalues
-    W = eigenvectors[:, :num_components]
-
-    # Return the weight matrix W that contains the principal components
     return W
