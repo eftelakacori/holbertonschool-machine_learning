@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Deep neural network"""
-import numpy as np
 import pickle
+import numpy as np
 
 
 class DeepNeuralNetwork:
@@ -26,7 +26,8 @@ class DeepNeuralNetwork:
             self.__weights["W{}".format(
                 i + 1)] = np.random.randn(layers[i],
                                           layers[i-1])*np.sqrt(2/layers[i-1])
-            self.__weights["b{}".format(i + 1)] = np.zeros([layers[i], 1], dtype=float)
+            self.__weights["b{}".format(
+                i + 1)] = np.zeros([layers[i], 1], dtype=float)
 
     @property
     def L(self):
@@ -45,23 +46,28 @@ class DeepNeuralNetwork:
         self.__cache["A0"] = X
         for i in range(1, self.__L + 1):
             Z = np.dot(self.__weights["W{}".format(i)],
-                       self.__cache["A{}".format(i - 1)]) + self.__weights["b{}".format(i)]
-            sigmoid = 1 / (1 + np.exp(-Z))
+                       self.__cache["A{}".format(
+                        i - 1)]) + self.__weights["b{}".format(i)]
+            if i != self.__L:
+                sigmoid = 1 / (1 + np.exp(-Z))
+            else:
+                t = np.exp(Z)
+                sigmoid = np.exp(Z) / np.sum(t, axis=0, keepdims=True)
             self.__cache["A{}".format(i)] = sigmoid
         return (sigmoid, self.__cache)
 
     def cost(self, Y, A):
         """Calculate cost"""
         m = Y.shape[1]
-        m__loss = np.sum((Y * np.log(A)) + ((1 - Y) * np.log(1.0000001 - A)))
-        cost = (1/m) * (-(m__loss))
+        m__loss = -(np.sum(Y * np.log(A), axis=1))
+        cost = np.sum(m__loss) / m
         return (cost)
 
     def evaluate(self, X, Y):
         """Evaluate deep neural network"""
         A, cache = self.forward_prop(X)
         cost = self.cost(Y, A)
-        prediction = np.where(A >= 0.5, 1, 0)
+        prediction = np.where(A == np.amax(A, axis=0), 1, 0)
         return(prediction, cost)
 
     def gradient_descent(self, Y, cache, alpha=0.05):
@@ -72,9 +78,12 @@ class DeepNeuralNetwork:
             db = (np.sum(dz, axis=1, keepdims=True) / Y.shape[1])
             dw = (np.matmul(cache["A{}".format(i - 1)], dz.T) / Y.shape[1])
             dz = np.matmul(self.__weights["W{}".format(
-                i)].T, dz) * (cache["A{}".format(i - 1)] * (1 - cache["A{}".format(i - 1)]))
-            self.__weights["b{}".format(i)] = self.__weights["b{}".format(i)] - (alpha * db)
-            self.__weights["W{}".format(i)] = self.__weights["W{}".format(i)] - (alpha * dw).T
+                i)].T, dz) * (cache["A{}".format(i - 1)] * (1 - cache["A{}"
+                              .format(i - 1)]))
+            self.__weights["b{}".format(i)] = self.__weights["b{}".format(
+                i)] - (alpha * db)
+            self.__weights["W{}".format(i)] = self.__weights["W{}".format(
+                i)] - (alpha * dw).T
 
     def train(self, X, Y, iterations=5000, alpha=0.05, verbose=True,
               graph=True, step=100):
