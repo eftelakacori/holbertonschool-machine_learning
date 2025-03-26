@@ -3,6 +3,7 @@
 import numpy as np
 import pickle
 
+
 class DeepNeuralNetwork:
     """Deep neural network class"""
     def __init__(self, nx, layers):
@@ -15,36 +16,38 @@ class DeepNeuralNetwork:
         self.__L = len(layers)
         self.__cache = {}
         self.__weights = {}
-        self.__weights["W1"] = np.random.randn(layers[0], nx) * \
-            np.sqrt(2 / nx)
+        self.__weights["W1"] = np.random.randn(layers[0], nx) * np.sqrt(2 / nx)
         self.__weights["b1"] = np.zeros([layers[0], 1], dtype=float)
         if layers[0] <= 0 or type(layers[0]) is not int:
             raise TypeError("layers must be a list of positive integers")
         for i in range(1, self.L):
             if layers[i] <= 0 or type(layers[i]) is not int:
                 raise TypeError("layers must be a list of positive integers")
-            self.__weights["W{}".format(i + 1)] = np.random.randn(
-                layers[i], layers[i-1]) * np.sqrt(2/layers[i-1])
-            self.__weights["b{}".format(i + 1)] = np.zeros([layers[i], 1], dtype=float)
+            self.__weights["W{}".format(
+                i + 1)] = np.random.randn(layers[i],
+                                          layers[i-1])*np.sqrt(2/layers[i-1])
+            self.__weights["b{}".format(
+                i + 1)] = np.zeros([layers[i], 1], dtype=float)
 
     @property
     def L(self):
-        return(self.__L)
+        return (self.__L)
 
     @property
     def cache(self):
-        return(self.__cache)
+        return (self.__cache)
 
     @property
     def weights(self):
-        return(self.__weights)
+        return (self.__weights)
 
     def forward_prop(self, X):
         """forward propagation multi layer"""
         self.__cache["A0"] = X
         for i in range(1, self.__L + 1):
             Z = np.dot(self.__weights["W{}".format(i)],
-                       self.__cache["A{}".format(i - 1)]) + self.__weights["b{}".format(i)]
+                       self.__cache["A{}".format(
+                        i - 1)]) + self.__weights["b{}".format(i)]
             sigmoid = 1 / (1 + np.exp(-Z))
             self.__cache["A{}".format(i)] = sigmoid
         return (sigmoid, self.__cache)
@@ -61,7 +64,7 @@ class DeepNeuralNetwork:
         A, cache = self.forward_prop(X)
         cost = self.cost(Y, A)
         prediction = np.where(A >= 0.5, 1, 0)
-        return(prediction, cost)
+        return (prediction, cost)
 
     def gradient_descent(self, Y, cache, alpha=0.05):
         """Calculates one pass of gradient descent on the neural network"""
@@ -71,9 +74,12 @@ class DeepNeuralNetwork:
             db = (np.sum(dz, axis=1, keepdims=True) / Y.shape[1])
             dw = (np.matmul(cache["A{}".format(i - 1)], dz.T) / Y.shape[1])
             dz = np.matmul(self.__weights["W{}".format(
-                i)].T, dz) * (cache["A{}".format(i - 1)] * (1 - cache["A{}".format(i - 1)]))
-            self.__weights["b{}".format(i)] = self.__weights["b{}".format(i)] - (alpha * db)
-            self.__weights["W{}".format(i)] = self.__weights["W{}".format(i)] - (alpha * dw).T
+                i)].T, dz) * (cache["A{}".format(i - 1)] * (1 - cache["A{}"
+                              .format(i - 1)]))
+            self.__weights["b{}".format(i)] = self.__weights["b{}".format(
+                i)] - (alpha * db)
+            self.__weights["W{}".format(i)] = self.__weights["W{}".format(
+                i)] - (alpha * dw).T
 
     def train(self, X, Y, iterations=5000, alpha=0.05, verbose=True,
               graph=True, step=100):
@@ -130,5 +136,5 @@ class DeepNeuralNetwork:
         try:
             fileobj = open(filename, 'rb')
             return pickle.load(fileobj)
-        except(OSError, IOError) as e:
+        except (OSError, IOError) as e:
             return None
