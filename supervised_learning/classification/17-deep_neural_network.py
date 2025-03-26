@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 Class that defines a deep neural network performing binary classification
@@ -48,4 +47,3 @@ class DeepNeuralNetwork:
     @property
     def weights(self):
         return (self.__weights)
-
