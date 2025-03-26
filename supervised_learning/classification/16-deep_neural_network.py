@@ -4,6 +4,7 @@ a class that defines a deep neural network performing binary classification
 """
 import numpy as np
 
+
 class DeepNeuralNetwork:
     """
     A class that defines a deep neural network performing binary classification.
@@ -27,6 +28,7 @@ class DeepNeuralNetwork:
         for i, n in enumerate(layers):
             if not isinstance(n, int) or n < 1:
                 raise TypeError("layers must be a list of positive integers")
+            
             # Initialize weights and biases using He initialization
             if i == 0:
                 self.weights = {"W1": np.random.randn(n, nx) * np.sqrt(2 / nx),
