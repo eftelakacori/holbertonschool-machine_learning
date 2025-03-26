@@ -37,7 +37,7 @@ class DeepNeuralNetwork:
                                 "b1": np.zeros((n, 1))}
             else:
                 self.weights["W{}".format(i + 1)] = \
-                    np.random.randn(n, layers[i - 1]) * np.sqrt(2 / layers[i - 1])
+                 np.random.randn(n, layers[i - 1]) * np.sqrt(2 / layers[i - 1])
                 self.weights["b{}".format(i + 1)] = np.zeros((n, 1))
 
         # Set the number of layers (L) in the network
