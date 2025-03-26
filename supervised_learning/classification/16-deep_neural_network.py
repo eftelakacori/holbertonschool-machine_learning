@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-a class that defines a deep neural network performing binary classification
+a class that defines a deep neural network performing 
+binary classification
 """
 import numpy as np
 
-
 class DeepNeuralNetwork:
     """
-    A class that defines a deep neural network performing binary classification.
+    A class that defines a deep neural network performing
+    binary classification.
     """
     def __init__(self, nx, layers):
         """Class constructor."""
