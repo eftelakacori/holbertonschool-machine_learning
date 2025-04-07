@@ -20,4 +20,3 @@ def load_config(filename):
         json_string = f.read()
     model = K.models.model_from_json(json_string)
     return model
-
