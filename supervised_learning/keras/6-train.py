@@ -1,26 +1,42 @@
 #!/usr/bin/env python3
-"""A function that updates the function def train_model:
-to also train the model using early stopping"""
+"""
+    Train
+"""
+
 import tensorflow.keras as K
 
 
-def train_model(network, data, labels, batch_size, epochs,
-                validation_data=None, early_stopping=False,
+def train_model(network, data, labels, batch_size,
+                epochs, validation_data=None, early_stopping=False,
                 patience=0, verbose=True, shuffle=False):
-    """A function that updates the function def train_model
-    to also train the model using early stopping"""
-    if early_stopping and validation_data:
-        callback = []
-        callback.append(
-            K.callbacks.EarlyStopping(monitor='loss', patience=patience))
-    else:
-        callback = None
+    """
+        Function that trains a model using mini-batch gradient descent
 
-    history = network.fit(x=data, y=labels,
-                          batch_size=batch_size,
+        :param network: model to train
+        :param data: ndarray, shape(m, nx), input data
+        :param labels: ndarray, shape(m,classes), labels
+        :param batch_size: size of the batch
+        :param epochs: number of passes through data for mini-bath
+        :param validation_data: data to validate the model
+        :param early_stopping: boolean, use or not early stopping
+        :param patience: patience for early stopping
+        :param verbose: boolean, print or not during training
+        :param shuffle: boolean, shuffle or not every epoch
+
+        :return: History
+    """
+    callback = []
+    if early_stopping is True and validation_data is not None:
+        callback = K.callbacks.EarlyStopping(monitor='val_loss',
+                                             patience=patience)
+
+    history = network.fit(x=data,
+                          y=labels,
                           epochs=epochs,
+                          batch_size=batch_size,
                           validation_data=validation_data,
-                          callbacks=callback,
+                          callbacks=[callback],
                           verbose=verbose,
                           shuffle=shuffle)
+
     return history
