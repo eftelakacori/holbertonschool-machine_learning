@@ -1,17 +1,28 @@
 #!/usr/bin/env python3
 """
-A function that calculates the cost of a neural network with L2 regularization
+    L2 regularization
 """
+
 import numpy as np
 
 
-def L2_reg_cost(cost, lambtha, weights, L, m):
+def l2_reg_cost(cost, lambtha, weights, L, m):
     """
-    A function that calculates the cost of a neural network
-    with L2 regularization
+        Function that calculates the cost of a network with L2 Regularization
+
+        FORMULA = loss + lamda/2m * sum||w||**2
     """
-    L2_norm_squared = 0
-    for L in range(1, L+1):
-        L2_norm_squared += np.sum(np.square(weights["W" + str(L)]))
-    L2_regularization_cost = (lambtha / (2 * m)) * L2_norm_squared
-    return cost + L2_regularization_cost
+    reg_term = 0
+
+    for i in range(1, L + 1):
+        # construct key
+        weights_key = 'W' + str(i)
+
+        # extract weight matrix
+        W_i = weights[weights_key]
+
+        reg_term += np.sum(np.square(W_i))
+
+    cost_L2 = cost + (lambtha / (2 * m)) * reg_term
+
+    return cost_L2
