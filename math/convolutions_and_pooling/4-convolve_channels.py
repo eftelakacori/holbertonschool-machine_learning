@@ -32,4 +32,3 @@ def convolve_channels(images, kernel, padding="same", stride=(1, 1)):
             sum_out = np.sum(output, axis=(1, 2, 3))
             convoluted[:, h, w] = sum_out
     return convoluted
-    
