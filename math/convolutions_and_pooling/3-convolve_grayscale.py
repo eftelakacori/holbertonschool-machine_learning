@@ -1,20 +1,33 @@
 #!/usr/bin/env python3
-
-import matplotlib.pyplot as plt
+"""Performs a convolution on grayscale images"""
 import numpy as np
-convolve_grayscale = __import__('3-convolve_grayscale').convolve_grayscale
 
 
-if __name__ == '__main__':
+def convolve_grayscale(images, kernel, padding="same", stride=(1, 1)):
+    """Performs a convolution on grayscale images"""
+    m, height, width = images.shape
+    kh, kw = kernel.shape
+    sh, sw = stride
 
-    dataset = np.load('MNIST.npz')
-    images = dataset['X_train']
-    print(images.shape)
-    kernel = np.array([[1 ,0, -1], [1, 0, -1], [1, 0, -1]])
-    images_conv = convolve_grayscale(images, kernel, padding='valid', stride=(2, 2))
-    print(images_conv.shape)
+    if padding == "same":
+        ph = ((height - 1) * sh + kh - height) // 2 + 1
+        pw = ((width - 1) * sw + kw - width) // 2 + 1
+    elif padding == "valid":
+        ph = 0
+        pw = 0
+    else:
+        ph, pw = padding
 
-    plt.imshow(images[0], cmap='gray')
-    plt.show()
-    plt.imshow(images_conv[0], cmap='gray')
-    plt.show()
+    p_images = np.pad(images, ((0, 0), (ph, ph), (pw, pw)))
+    ch = ((height + 2 * ph - kh) // sh) + 1
+    cw = ((width + 2 * pw - kw) // sw) + 1
+
+    convoluted = np.zeros((m, ch, cw))
+
+    for h in range(ch):
+        for w in range(cw):
+            output = p_images[:, h * sh: h * sh + kh,
+                              w * sw: w * sw + kw] * kernel
+            sum_out = np.sum(output, axis=(1, 2))
+            convoluted[:, h, w] = sum_out
+    return convoluted
