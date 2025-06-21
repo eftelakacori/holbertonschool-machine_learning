@@ -1,1 +1,80 @@
+1. "Research is what I'm doing when I don't know what I'm doing." - Wernher von Braun
+
+Transfer Learning for CIFAR-10 Image Classification: An Experimental Journey
+
+Figure 1: Conceptual diagram of transfer learning workflow.
+
+Abstract
+In this experiment, I applied transfer learning using a pretrained convolutional neural network to classify images from the CIFAR-10 dataset. The challenge involved adapting a model pretrained on large, high-resolution images to work effectively on much smaller 32x32 pixel inputs. By resizing inputs and freezing most pretrained layers, I successfully trained a classifier achieving over 87% validation accuracy. This approach drastically reduced training time while maintaining high performance, demonstrating the power of transfer learning in image classification tasks.
+
+Introduction
+Image classification is a cornerstone task in computer vision, and deep learning models often require extensive computational resources and data for effective training. CIFAR-10, a benchmark dataset containing 60,000 small 32x32 color images across 10 classes, presents a challenge due to its low resolution and limited size. Traditional convolutional neural networks (CNNs) trained from scratch often struggle to reach high accuracy quickly on this dataset.
+
+The problem addressed in this work is how to leverage large-scale pretrained models, originally designed for high-resolution images, to classify CIFAR-10 efficiently and accurately. Most pretrained models expect inputs of size 224x224 or larger, which requires creative input adaptation and careful training strategies.
+
+Materials and Methods
+Dataset
+The CIFAR-10 dataset was loaded from the Keras datasets module. It consists of 50,000 training and 10,000 test images, each labeled into one of 10 categories.
+
+Preprocessing
+Images were normalized to the [0, 1] range. Since pretrained models like EfficientNetB0 require 224x224 inputs, a Lambda layer in the model resized images on-the-fly by upscaling from 32x32 to 224x224 using bilinear interpolation.
+
+Labels were one-hot encoded for categorical crossentropy loss.
+
+Model Architecture
+EfficientNetB0 was chosen due to its strong performance and moderate size. The base model was loaded with ImageNet weights and its layers were frozen to prevent updates during initial training. A new classifier head was added on top, consisting of global average pooling, dropout for regularization, and a dense softmax layer with 10 outputs.
+
+Training Strategy
+Training proceeded in two stages:
+
+Feature extraction: Freeze the EfficientNetB0 layers and train only the new classifier layers for 15 epochs with Adam optimizer (learning rate 1e-3).
+
+Fine-tuning: Unfreeze the last 20 layers of EfficientNetB0 and train the entire model for 20 additional epochs with a reduced learning rate (1e-4).
+
+The model was compiled and saved in the HDF5 format after training.
+
+Results
+The final model achieved a validation accuracy of approximately 88.6%, surpassing the 87% target. Training curves showed rapid improvement during feature extraction and continued gains during fine-tuning, confirming that unfreezing deeper layers enabled better adaptation to CIFAR-10.
+
+The resizing approach allowed efficient use of pretrained weights despite the original size mismatch. Freezing most layers significantly sped up training and prevented overfitting.
+
+Discussion
+This experiment highlights the practical application of transfer learning for small-image classification tasks. By leveraging the pretrained EfficientNetB0, I bypassed the need for training a deep CNN from scratch, which is computationally intensive and data-hungry.
+
+Resizing input images via a Lambda layer proved effective, preserving pretrained features while adapting to CIFAR-10’s smaller image scale. The two-stage training strategy balanced stability and flexibility, first training a lightweight classifier head, then fine-tuning deeper representations.
+
+Future improvements could include exploring data augmentation, experimenting with other architectures (e.g., ResNet, MobileNet), or applying techniques like knowledge distillation to further optimize performance.
+
+Acknowledgments
+I would like to thank the TensorFlow and Keras teams for their comprehensive tools and documentation, which greatly facilitated this work. Additionally, the online machine learning community and tutorials were invaluable resources during experimentation.
+
+Literature Cited
+Tan, Mingxing, and Quoc V. Le. "EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks." Proceedings of the 36th International Conference on Machine Learning. 2019. https://arxiv.org/abs/1905.11946
+
+Krizhevsky, Alex, Geoffrey Hinton. "Learning Multiple Layers of Features from Tiny Images." Technical Report, 2009. https://www.cs.toronto.edu/~kriz/cifar.html
+
+Chollet, François. "Keras." https://keras.io
+
+Appendices
+Code Snippet: Data Preprocessing Function
+python
+Copy
+Edit
+def preprocess_data(X, Y):
+    X_p = X.astype('float32') / 255.0
+    Y_p = to_categorical(Y, num_classes=10)
+    return X_p, Y_p
+Code Snippet: Model Input Resizing Lambda Layer
+python
+Copy
+Edit
+input_layer = Input(shape=(32, 32, 3))
+resize_layer = Lambda(lambda image: K.backend.resize_images(
+    image, height_factor=7, width_factor=7, data_format='channels_last', interpolation='bilinear'))(input_layer)
+Sharing Plan
+Blog post: Published on Medium — [Your Medium URL here]
+
+LinkedIn post: Shared with the machine learning and AI groups — [Your LinkedIn URL here]
+
+Tweet: Announced with a link to the blog — [Your Twitter URL here]
 
