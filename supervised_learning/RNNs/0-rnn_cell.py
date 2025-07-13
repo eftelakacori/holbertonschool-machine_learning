@@ -32,3 +32,4 @@ class RNNCell():
         y = h_next @ self.Wy + self.by
         y = np.exp(y) / np.sum(np.exp(y), axis=1, keepdims=True)
         return h_next, y
+    
