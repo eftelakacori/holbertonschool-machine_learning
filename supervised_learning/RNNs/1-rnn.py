@@ -1,17 +1,27 @@
 #!/usr/bin/env python3
-
+'''
+Modulus that represents a simple RNN
+'''
 import numpy as np
-RNNCell = __import__('0-rnn_cell').RNNCell
-rnn = __import__('1-rnn').rnn
 
-np.random.seed(1)
-rnn_cell = RNNCell(10, 15, 5)
-rnn_cell.bh = np.random.randn(1, 15)
-rnn_cell.by = np.random.randn(1, 5)
-X = np.random.randn(6, 8, 10)
-h_0 = np.zeros((8, 15))
-H, Y = rnn(rnn_cell, X, h_0)
-print(H.shape)
-print(H)
-print(Y.shape)
-print(Y)
+
+def rnn(rnn_cell, X, h_0):
+    '''
+    Function that performs forward propagation for a simple RNN
+    '''
+    # Shapes - t, max steps - m, batch size - i, dims data - h, dim hidden
+    t, m, i = X.shape
+    _, h = h_0.shape
+
+    H = np.zeros(shape=(t + 1, m, h))
+    Y = []
+
+    H[0, :, :] = h_0
+
+    for i in range(t):
+        h_n, y_p = rnn_cell.forward(H[i], X[i])
+        H[i + 1, :, :] = h_n
+        Y.append(y_p)
+
+    Y = np.array(Y)
+    return H, Y
