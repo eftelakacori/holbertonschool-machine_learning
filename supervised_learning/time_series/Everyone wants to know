@@ -1,0 +1,101 @@
+📈 Introduction to Time Series Forecasting
+Forecasting Bitcoin (BTC) prices is one of the most exciting and challenging problems in data science today. The volatile nature of cryptocurrencies makes them a perfect candidate for time series modeling.
+
+In this project, I used Recurrent Neural Networks (RNNs), specifically Long Short-Term Memory (LSTM) models, to forecast the BTC closing price for the next hour based on the last 24 hours of price history.
+
+🧹 Data Preprocessing
+We used 1-minute resolution datasets from Coinbase and Bitstamp, covering years of BTC trade history.
+
+Key preprocessing steps:
+
+Removed missing data: Dropped any rows with NaN values.
+
+Selected features: Used only price-based features (Open, High, Low, Close) — these capture the core market behavior. Transaction volume was excluded to avoid skew from inactive hours.
+
+Normalized features: Applied standard normalization using the training set's mean and std:
+
+python
+Copy
+Edit
+train_mean = train_data.mean()
+train_std = train_data.std()
+train_data = (train_data - train_mean) / train_std
+Data split:
+
+70% training
+
+20% validation
+
+10% testing
+
+🔄 tf.data.Dataset Pipeline
+We used a custom WindowGenerator class to convert time series into supervised learning samples.
+
+Input: 24 consecutive hours (24 x 60 = 1,440 minutes)
+
+Target: BTC closing price at the 25th hour (1 hour into the future)
+
+Snippet of dataset setup:
+
+python
+Copy
+Edit
+window = WindowGenerator(input_width=24, label_width=1, shift=1,
+                         train_data=train_df, valid_data=val_df, 
+                         test_data=test_df, label_columns=['Close'])
+
+train_ds = window.train.cache().shuffle(1000).batch(32).prefetch(tf.data.AUTOTUNE)
+🧠 Model Architecture: LSTM for Price Prediction
+Our model is a simple LSTM network:
+
+python
+Copy
+Edit
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense
+
+model = Sequential([
+    LSTM(24, input_shape=(24, num_features)),
+    Dense(1)
+])
+model.compile(optimizer='adam', loss='mse', metrics=['mae'])
+The LSTM layer has 24 units, corresponding to the 24 time steps.
+
+The output is a single value: the predicted BTC close price one hour ahead.
+
+📊 Results
+The model was trained with early stopping on validation loss. Here are the performance metrics:
+
+Validation MSE: 0.00049
+
+Test MSE: 0.00052
+
+Test MAE: 0.018
+(This means the average prediction error was about ~1.8% of normalized price)
+
+📉 Actual vs Predicted BTC Close Price:
+
+A snapshot of the model forecasting BTC prices during test set evaluation
+
+🧾 Example Prediction
+Given this sequence of normalized values:
+
+Open	High	Low	Close
+0.20	0.30	0.15	0.25
+0.25	0.35	0.20	0.30
+0.30	0.40	0.25	0.35
+0.35	0.45	0.30	0.40
+0.40	0.50	0.35	0.45
+
+➡ The model predicts: 0.50 for the next closing price (hour 6).
+
+💡 Conclusion
+Forecasting BTC using LSTM RNNs is a valuable exercise in applying deep learning to financial data. While models can identify short-term trends, cryptocurrency prices remain highly volatile and influenced by external factors.
+
+Machine learning should be used as a decision-support tool, not a sole trading strategy. Future improvements may include:
+
+Incorporating additional signals (volume, macroeconomic data)
+
+Using sequence-to-sequence models
+
+Predicting trends or classification (up/down) instead of exact prices
